@@ -136,7 +136,7 @@ https://engineeringxpert.com/wp-content/uploads/2022/04/26.png
 
 ## STM 32 CUBE PROGRAM :
 ```
-Developed By: B DHivya Shri
+Developed By: B Dhivya Shri
 Reg No.: 212221230009
 ```
 ```
@@ -222,7 +222,8 @@ void assert_failed(uint8_t *file, uint32_t line){}
 ## Output screen shots of proteus  :
 
  ![image](https://github.com/DhivyaShri484/EXPERIMENT--04-INTERFACING-AN16X2-LCD-DISPLAY-WITH-ARM-/assets/94505585/14ddcca2-5b2f-4dc7-ba1d-f421f0aaa031)
-
+ <br>
+ ![image](https://github.com/DhivyaShri484/EXPERIMENT--04-INTERFACING-AN16X2-LCD-DISPLAY-WITH-ARM-/assets/94505585/d01ca61b-a6a1-4000-b288-d115372568df)
 
 ## CIRCUIT DIAGRAM : 
 
