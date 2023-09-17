@@ -1,7 +1,7 @@
 # EXPERIMENT--04-INTERFACING-AN16X2-LCD-DISPLAY-WITH-ARM AND DISPLAY STRING
 
 
- ## Aim: To Interface a 16X2 LCD display to ARM controller  , and simulate it in Proteus 
+## Aim: To Interface a 16X2 LCD display to ARM controller  , and simulate it in Proteus 
 ## Components required: STM32 CUBE IDE, Proteus 8 simulator .
 ## Theory 
 The full form of an ARM is an advanced reduced instruction set computer (RISC) machine, and it is a 32-bit processor architecture expanded by ARM holdings. The applications of an ARM processor include several microcontrollers as well as processors. The architecture of an ARM processor was licensed by many corporations for designing ARM processor-based SoC products and CPUs. This allows the corporations to manufacture their products using ARM architecture. Likewise, all main semiconductor companies will make ARM-based SOCs such as Samsung, Atmel, TI etc.
@@ -36,83 +36,45 @@ Whereas in 8 bit mode we can send the 8-bit data directly in one stroke since we
  8-bit mode is faster and flawless than 4-bit mode. But the major drawback is that it needs 8 data lines connected to the microcontroller. This will make us run out of I/O pins on our MCU, so 4-bit mode is widely used. No control pins are used to set these modes. 
  LCD Commands:
 
-There are some preset commands instructions in LCD, which we need to send to LCD through some microcontroller. Some important command instructions are given below:
+<b>There are some preset commands instructions in LCD, which we need to send to LCD through some microcontroller. Some important command instructions are given below:</b>
 
-Hex Code
+Hex Code    Command to LCD Instruction Register 
 
-Command to LCD Instruction Register
+0F    LCD ON, cursor ON
 
-0F
+01    Clear display screen
 
-LCD ON, cursor ON
+02    Return home
 
-01
+04    Decrement cursor (shift cursor to left)
 
-Clear display screen
+06    Increment cursor (shift cursor to right)
 
-02
+05    Shift display right
 
-Return home
+07    Shift display left
 
-04
+0E    Display ON, cursor blinking
 
-Decrement cursor (shift cursor to left)
+80    Force cursor to beginning of first line
 
-06
+C0    Force cursor to beginning of second line
 
-Increment cursor (shift cursor to right)
+38    2 lines and 5×7 matrix
 
-05
+83    Cursor line 1 position 3
 
-Shift display right
+3C    Activate second line
 
-07
+08    Display OFF, cursor OFF
 
-Shift display left
+C1    Jump to second line, position 1
 
-0E
+OC    Display ON, cursor OFF
 
-Display ON, cursor blinking
+C1    Jump to second line, position 1
 
-80
-
-Force cursor to beginning of first line
-
-C0
-
-Force cursor to beginning of second line
-
-38
-
-2 lines and 5×7 matrix
-
-83
-
-Cursor line 1 position 3
-
-3C
-
-Activate second line
-
-08
-
-Display OFF, cursor OFF
-
-C1
-
-Jump to second line, position 1
-
-OC
-
-Display ON, cursor OFF
-
-C1
-
-Jump to second line, position 1
-
-C2
-
-Jump to second line, position 2
+C2    Jump to second line, position 2
  
 ## Procedure:
  1. click on STM 32 CUBE IDE, the following screen will appear 
@@ -173,16 +135,101 @@ https://engineeringxpert.com/wp-content/uploads/2022/04/26.png
 
 
 ## STM 32 CUBE PROGRAM :
+```
+Developed By: B DHivya Shri
+Reg No.: 212221230009
+```
+```
+#include "main.h"
+#include "lcd.h"
+void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+int main(void)
+{
+  SystemClock_Config();
+  MX_GPIO_Init();
+  	  Lcd_PortType ports[] = {GPIOA,GPIOA,GPIOA,GPIOA};
+      Lcd_PinType pins[] = {GPIO_PIN_3,GPIO_PIN_2,GPIO_PIN_1,GPIO_PIN_0};
+      Lcd_HandleTypeDef lcd;
+      lcd = Lcd_create(ports,pins,GPIOB,GPIO_PIN_0,GPIOB,GPIO_PIN_1,LCD_4_BIT_MODE);
+      Lcd_cursor(&lcd, 0,0);
+      Lcd_string(&lcd, "Dept: AI-DS");
+      Lcd_cursor(&lcd, 1,0);
+      Lcd_string(&lcd,"Name: Dhivya");
+  while (1){ }
+}
+void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  __HAL_RCC_PWR_CLK_ENABLE();
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE2);
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+static void MX_GPIO_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3, GPIO_PIN_RESET);
 
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_1, GPIO_PIN_RESET);
 
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+}
+void Error_Handler(void)
+{
+  __disable_irq();
+  while (1)
+  {
+  }
+}
+
+#ifdef  USE_FULL_ASSERT
+void assert_failed(uint8_t *file, uint32_t line){}
+#endif
+
+```
 ## Output screen shots of proteus  :
- 
- 
- ## CIRCUIT DIAGRAM (EXPORT THE GRAPHICS TO PDF AND ADD THE SCREEN SHOT HERE): 
- 
- 
+
+ ![image](https://github.com/DhivyaShri484/EXPERIMENT--04-INTERFACING-AN16X2-LCD-DISPLAY-WITH-ARM-/assets/94505585/14ddcca2-5b2f-4dc7-ba1d-f421f0aaa031)
+
+
+## CIRCUIT DIAGRAM : 
+
+![image](https://github.com/DhivyaShri484/EXPERIMENT--04-INTERFACING-AN16X2-LCD-DISPLAY-WITH-ARM-/assets/94505585/ac29a45a-cdcf-463b-adc7-fb2ea42fc8fc)
+
+
+
 ## Result :
 Interfacing a lcd display with ARM microcontroller are simulated in proteus and the results are verified.
 
